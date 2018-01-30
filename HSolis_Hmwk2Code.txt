@@ -1,0 +1,123 @@
+SSub Calculation()
+
+         ' Declare Current as a worksheet object variable.
+         Dim Current As Worksheet
+
+         ' Loop through all of the worksheets in the active workbook.
+         For Each Current In Worksheets
+            MsgBox "Calculating sheet " + Current.Name
+            aTesting ("2014")
+            
+        Next
+         
+         
+End Sub
+         
+           
+Function aTesting(ByVal SheetName As String)
+ Dim wks As Worksheet
+ Set wks = ActiveWorkbook.Worksheets(SheetName)
+  ' Set an initial variable for holding the ticker symbol
+  Dim ticker As String
+  
+  ' Set an initial variable for holding the total stock volume
+  Dim Total_Volume As Double
+  Total_Volume = 0
+  
+  ' Set an initial variable for holding the yearly change
+  Dim Change As Double
+  Dim opening_price As Double
+  
+  Change = 0
+  
+   ' Set variable for percentage change
+  Dim Perc_Change As Range
+      
+  Dim Per_Change_Val As Double
+  Per_Change_Val = 0
+
+  ' Keep track of the location for each ticker in the summary table
+  Dim Summary_Table_Row As Integer
+  Summary_Table_Row = 2
+
+  ' Loop through all tickers
+  Dim x As Integer
+  NumRows = wks.Range("A1", wks.Range("A1").End(xlDown)).Rows.Count
+  For i = 2 To NumRows
+
+    ' Check if we are still within the same ticker, if it is not...
+    If wks.Cells(i + 1, 1).Value <> wks.Cells(i, 1).Value Then
+
+      ' Set the ticker symbol
+      Ticker_Symbol = wks.Cells(i, 1).Value
+      
+      ' Add to the volume total
+      Total_Volume = Total_Volume + wks.Cells(i, 7).Value
+      
+      ' Add to the yearly change
+      Change = Change + (wks.Cells(i, 3).Value - wks.Cells(i, 6).Value)
+      
+      ' Per_Change_Val = Per_Change_Val + ((wks.Cells(i, 3).Value - wks.Cells(i, 6).Value) / wks.Cells(i, 3).Value)
+      
+      ' Print the ticker symbol in the Summary Table
+      wks.Range("J" & Summary_Table_Row).Value = Ticker_Symbol
+
+      ' Print the total volume to the Summary Table
+      wks.Range("K" & Summary_Table_Row).Value = Total_Volume
+      
+      ' Print the yearly change to the Summary Table
+      wks.Range("L" & Summary_Table_Row).Value = Change
+      If Change >= 0 Then
+        wks.Range("L" & Summary_Table_Row).Interior.ColorIndex = 4
+      Else
+       wks.Range("L" & Summary_Table_Row).Interior.ColorIndex = 3
+      End If
+      
+      
+      ' Print the the percentage
+      Set Perc_Change = wks.Range("M" & Summary_Table_Row)
+      Perc_Change.Value = Per_Change_Val
+      Perc_Change.NumberFormat = "0.00%"
+      
+      ' Add one to the summary table row
+      Summary_Table_Row = Summary_Table_Row + 1
+      
+      
+      ' Reset the Total_Volume
+      Total_Volume = 0
+      
+      ' Reset the change
+      Change = 0
+      
+      'Reset
+      Per_Change_Val = 0
+      
+
+
+    ' If the cell immediately following a row is the same ticker...
+    Else
+
+      ' Add to the total volume
+      Total_Volume = Total_Volume + wks.Cells(i, 7).Value
+      
+       ' Add to the change
+      Change = Change + (wks.Cells(i, 3).Value - wks.Cells(i, 6).Value)
+      
+      opening_price = wks.Cells(i, 3).Value
+      
+      ' Add to the Percentage
+      If opening_price = 0 Then
+        wks.Cells(i, 6).Value = 0
+      
+    Else
+        Per_Change_Val = Per_Change_Val + ((opening_price - wks.Cells(i, 6).Value) / opening_price)
+     End If
+      
+      
+    End If
+
+  Next i
+
+End Function
+
+
