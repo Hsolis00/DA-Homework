@@ -12,6 +12,7 @@ var filteredSightings = dataSet;
 // renderTable renders the filteredSightings to the tbody
 function renderTable() {
   $tbody.innerHTML = "";
+  
   for (var i = 0; i < filteredSightings.length; i++) {
     // Get get the current address object and its fields
     var sighting = filteredSightings[i];

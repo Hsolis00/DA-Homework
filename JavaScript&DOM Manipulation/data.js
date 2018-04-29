@@ -64987,8 +64987,5 @@ var dataSet = [
     shape: "formation",
     durationMinutes: "2-3 minutes",
     comments: "Strange lights above Warrenton&#44Virginia."
-  },
-  {
-    datetime: "10/8/2011",
-    city: "wisconsin dells",
-    state:
+  }
+  ]
